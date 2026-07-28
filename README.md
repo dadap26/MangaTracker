@@ -43,7 +43,25 @@ To let the website communicate safely with your spreadsheet:
 
 ---
 
-### 3. Connect to the App
+### 3. Configure Automated Triggers
+This project uses background triggers to automatically update manga data (like timestamps or fetching the latest chapters). To set them up:
+
+1. In your Apps Script editor sidebar, click the **Triggers** icon (the alarm clock ⏰ icon).
+2. Click the blue **+ Add Trigger** button in the bottom right corner.
+3. Add the **On Edit** trigger:
+   * **Choose which function to run:** `handleEdit`
+   * **Choose which deployment should run:** `Head`
+   * **Select event source:** `From spreadsheet`
+   * **Select event type:** `On edit`
+   * Click **Save**.
+4. Add the **Time-Based** trigger:
+   * **Choose which function to run:** `fetchLatestChapters`
+   * **Choose which deployment should run:** `Head`
+   * **Select event source:** `Time-driven`
+   * **Select type of time based trigger:** `Hour timer` (and select your preferred interval)
+   * Click **Save**.
+
+### 4. Connect to the App
 1. Open the live hosted URL of this website.
 2. Click on the **Settings** icon/button in the user interface.
 3. Paste your copied Google Apps Script **Web App URL** into the input field.
