@@ -294,7 +294,7 @@
 
 <main>
   <div class="grid" id="grid">
-    <div class="state"><div class="spinner"></div><h3>Loading your shelf…</h3></div>
+    <div class="state"><div class="spinner"></div><h3>Loading your library</h3></div>
   </div>
 </main>
 
@@ -315,7 +315,7 @@
 <div class="overlay" id="addOverlay">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <h2 class="display">Add to shelf</h2>
+    <h2 class="display">Add to library</h2>
     <p class="sub">Paste the manga's page URL — title, cover, and latest chapter fill in automatically.</p>
     <div id="addError"></div>
     <div class="field">
@@ -463,7 +463,7 @@ function render(){
   if(filtered.length === 0){
     grid.innerHTML = `<div class="state">
       <div style="font-size:36px;">🗂️</div>
-      <h3>Your shelf is empty</h3>
+      <h3>Your library is empty</h3>
       <p>Tap the + button to add your first manga by pasting its URL.</p>
     </div>`;
     return;
@@ -506,7 +506,7 @@ function cardHtml(m){
 async function loadData(showSpinner = true){
   if(!API_URL){ openSettings(true); return; }
   if(showSpinner){
-    grid.innerHTML = `<div class="state"><div class="spinner"></div><h3>Loading your shelf…</h3></div>`;
+    grid.innerHTML = `<div class="state"><div class="spinner"></div><h3>Loading your library…</h3></div>`;
   }
   try{
     allManga = await apiGet();
@@ -514,7 +514,7 @@ async function loadData(showSpinner = true){
   }catch(err){
     grid.innerHTML = `<div class="state">
       <div style="font-size:36px;">⚠️</div>
-      <h3>Couldn't load your shelf</h3>
+      <h3>Couldn't load your library</h3>
       <p>${escapeHtml(err.message)}. Check your Web App URL in Settings and try again.</p>
     </div>`;
   }
@@ -569,7 +569,7 @@ addSubmitBtn.addEventListener('click', async () => {
   try{
     await apiPost({ action:'addManga', url });
     addOverlay.classList.remove('open');
-    showToast('Added to your shelf');
+    showToast('Added to your library');
     await loadData(false);
   }catch(err){
     addError.innerHTML = `<div class="inline-msg error">${escapeHtml(err.message)}</div>`;
