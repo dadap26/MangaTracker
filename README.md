@@ -34,7 +34,6 @@ To let the website communicate safely with your spreadsheet:
 3. Paste this exact code into the script editor:
 
 /*** ===== CONFIG ===== */
-
 const SHEET_NAME = 'Sheet1'; // change to your sheet/tab name
 const SPREADSHEET_ID = ''; // leave blank to use the container-bound sheet
 
@@ -536,6 +535,16 @@ function doPost(e) {
       const result = updateMangaStatus_(payload.id, payload.status);
       return jsonResponse_({ success: true, data: result });
     }
+
+    if (payload.action === 'updateUrl') {
+      const result = updateMangaUrl_(payload.id, payload.url);
+      return jsonResponse_({ success: true, data: result });
+    }
+
+    if (payload.action === 'deleteManga') {
+      const result = deleteManga_(payload.id);
+      return jsonResponse_({ success: true, data: result });
+    }
     return jsonResponse_({ success: false, error: 'Unknown action' });
 
   } catch (err) {
@@ -610,6 +619,91 @@ function updateMangaStatus_(id, status) {
     if (data[r][idCol] == id) {
       sheet.getRange(r + 1, statusCol + 1).setValue(status);
       return { id: id, status: status };
+    }
+  }
+  throw new Error(`No manga found with ID ${id}`);
+}
+
+/**
+ * Updates the source URL for a given manga ID. Used when a source
+ * page has moved (site redesign, dead link, mirror switch, etc.)
+ * without wanting to re-add the manga as a brand-new row.
+ */
+/**
+ * Updates the source URL for a given manga ID, and re-scrapes that
+ * new page for fresh metadata (title, type, cover image, latest
+ * chapter) since a changed link often means a different site/layout.
+ * Current Chapter, Status, and Notes are left untouched — those are
+ * the user's own reading progress and shouldn't reset just because
+ * the source moved.
+ */
+function updateMangaUrl_(id, url) {
+  if (!url || !url.trim()) throw new Error('URL cannot be empty');
+  const cleanUrl = url.trim();
+
+  const sheet = getSheet_();
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const idCol = headers.indexOf('ID');
+  const urlCol = headers.indexOf('URL');
+  const titleCol = headers.indexOf('Title');
+  const typeCol = headers.indexOf('Type');
+  const coverCol = headers.indexOf('Cover Image URL');
+  const latestCol = headers.indexOf('Latest Chapter');
+
+  let targetRow = -1;
+  for (let r = 1; r < data.length; r++) {
+    if (data[r][idCol] == id) { targetRow = r; break; }
+  }
+  if (targetRow === -1) throw new Error(`No manga found with ID ${id}`);
+
+  // Always save the new URL first, even if the re-scrape below fails —
+  // a broken/slow new page shouldn't block the link change itself.
+  sheet.getRange(targetRow + 1, urlCol + 1).setValue(cleanUrl);
+
+  const result = { id: id, url: cleanUrl };
+
+  try {
+    const html = fetchPage_(cleanUrl);
+    const meta = extractMangaMetadata_(html);
+    const latestChapter = extractLatestChapter_(html) || 0;
+
+    if (meta.title) sheet.getRange(targetRow + 1, titleCol + 1).setValue(meta.title);
+    if (meta.type) sheet.getRange(targetRow + 1, typeCol + 1).setValue(meta.type);
+    if (meta.coverImage) sheet.getRange(targetRow + 1, coverCol + 1).setValue(meta.coverImage);
+    sheet.getRange(targetRow + 1, latestCol + 1).setValue(latestChapter);
+
+    result.title = meta.title;
+    result.type = meta.type;
+    result.coverImage = meta.coverImage;
+    result.latestChapter = latestChapter;
+    result.metadataRefreshed = true;
+  } catch (err) {
+    // URL is saved either way; just flag that the metadata refresh didn't happen.
+    result.metadataRefreshed = false;
+    result.metadataError = err.message;
+  }
+
+  return result;
+}
+
+/**
+ * Deletes a manga row entirely by ID. Hard delete — removes the
+ * sheet row, no soft-delete/undo. IDs are computed as (max existing
+ * ID + 1) when adding, so this can leave a gap in the ID sequence,
+ * or free up the highest ID for reuse — either is harmless since
+ * nothing in the frontend surfaces the raw ID to the user.
+ */
+function deleteManga_(id) {
+  const sheet = getSheet_();
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const idCol = headers.indexOf('ID');
+
+  for (let r = 1; r < data.length; r++) {
+    if (data[r][idCol] == id) {
+      sheet.deleteRow(r + 1); // +1: sheet rows are 1-indexed, data[] skips header
+      return { id: id, deleted: true };
     }
   }
   throw new Error(`No manga found with ID ${id}`);
