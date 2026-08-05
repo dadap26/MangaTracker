@@ -66,3 +66,30 @@ This project uses background triggers to automatically update manga data (like t
 2. Click on the **Settings** icon/button in the user interface.
 3. Paste your copied Google Apps Script **Web App URL** into the input field.
 4. Save and reload the page. Your tracker is now fully operational!
+
+
+# Manga Tracker Extension (Browser Extension) — How to Use
+
+A quick guide to installing and using the extension.
+
+## 1. Install the extension
+
+1. Unzip the extension folder somewhere on your computer (keep it — Chrome loads it from this location, so don't delete it after installing).
+2. Open `chrome://extensions` (or `edge://extensions` if you're on Edge).
+3. Turn on **Developer mode** (toggle in the top-right corner).
+4. Click **Load unpacked**.
+5. Select the unzipped `manga-badge-extension` folder.
+6. The extension's icon (📚) should now appear in your toolbar. If you don't see it, click the puzzle-piece icon in the toolbar and pin it.
+
+## 2. Connect it to your Manga Tracker
+
+The extension needs the same Web App URL your Manga Tracker app uses.
+
+1. Open your Manga Tracker's Apps Script project.
+2. Go to **Deploy → Manage deployments**.
+3. Copy the **Web app URL** next to your active deployment — it should end in `/exec`.
+4. Double-check **"Who has access"** is set to **Anyone** (not "Anyone with Google account") — otherwise the extension can't reach it.
+5. Click the extension's toolbar icon, then **Settings** (bottom-right of the popup).
+6. Paste the URL into the field and click **Save & Refresh**.
+
+That's it — the popup should immediately load your library's counts.
