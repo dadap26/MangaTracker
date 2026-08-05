@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manga Tracker Badge — Settings</title>
+<link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="wrap">
+    <h1>📚 Manga Tracker Badge</h1>
+    <p class="sub">Paste the same Web App URL you use in the Manga Tracker app's Settings.</p>
+
+    <label for="apiUrlInput">Web App URL</label>
+    <input id="apiUrlInput" type="url" placeholder="https://script.google.com/macros/s/.../exec">
+
+    <button id="saveBtn">Save & Refresh</button>
+    <div id="msg"></div>
+
+    <p class="note">The badge on the toolbar icon shows your ongoing (Reading) count, and turns red when any manga has a new chapter waiting. It refreshes automatically every 15 minutes.</p>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

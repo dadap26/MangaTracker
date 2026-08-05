@@ -1,0 +1,120 @@
+:root{
+  --ink:#1B1533;
+  --surface:#241B3F;
+  --surface-2:#2E2251;
+  --coral:#FF6B6B;
+  --gold:#FFD166;
+  --teal:#4ECDC4;
+  --lavender:#A78BFA;
+  --paper:#F4F1FF;
+  --muted:#9C93BE;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  width:300px;
+  background:var(--ink);
+  color:var(--paper);
+  font-family:-apple-system,'Segoe UI',Roboto,sans-serif;
+  font-size:13px;
+}
+
+header{
+  display:flex; align-items:center; gap:8px;
+  padding:12px 14px; background:var(--surface-2);
+}
+header .title{ font-size:14px; font-weight:700; margin-right:auto; }
+#refreshBtn{
+  background:none; border:none; color:var(--muted); cursor:pointer;
+  padding:5px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+  transition: background .12s ease, color .12s ease;
+}
+#refreshBtn:hover{ background:rgba(255,255,255,0.08); color:var(--paper); }
+#refreshBtn.spinning svg{ animation:spin .8s linear infinite; }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+#content{ padding:12px 14px; }
+
+.state{ text-align:center; padding:30px 10px; color:var(--muted); }
+.spinner{
+  width:22px; height:22px; border-radius:999px; margin:0 auto 10px;
+  border:3px solid rgba(255,255,255,0.15); border-top-color:var(--coral);
+  animation:spin .7s linear infinite;
+}
+.state p{ margin:0; font-size:12.5px; }
+.state .err{ color:var(--coral); }
+
+/* ---------- Main grid: 4 clickable status tiles ---------- */
+.stats{ position:relative; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.stat{
+  background:var(--surface); border-radius:14px; padding:16px 14px;
+  border:1px solid rgba(255,255,255,0.05); cursor:pointer;
+  text-align:left; font-family:inherit; transition:background .12s ease, transform .1s ease;
+}
+.stat:hover{ background:var(--surface-2); }
+.stat:active{ transform:scale(0.98); }
+.stat .num{ font-size:26px; font-weight:800; line-height:1.1; }
+.stat .lbl{ font-size:12px; color:var(--muted); margin-top:4px; }
+.stat.ongoing .num{ color:var(--teal); }
+.stat.hold .num{ color:var(--gold); }
+.stat.completed .num{ color:var(--lavender); }
+.stat.dropped .num{ color:var(--coral); }
+
+/* Notification dot: floats over the grid's top-right corner, shows the
+   count of manga with new chapters. Clicking it dismisses it — it won't
+   reappear until the underlying set of new chapters actually changes. */
+.notif-dot{
+  position:absolute; top:-8px; right:-8px; z-index:5;
+  width:22px; height:22px; border-radius:999px;
+  background:var(--coral); color:var(--ink); font-size:11px; font-weight:800;
+  border:2px solid var(--ink); display:flex; align-items:center; justify-content:center;
+  cursor:pointer; padding:0; box-shadow:0 2px 6px rgba(0,0,0,0.35);
+  transition: transform .12s ease, opacity .15s ease;
+}
+.notif-dot:hover{ transform:scale(1.1); }
+.notif-dot:active{ transform:scale(0.92); }
+
+/* ---------- List view (tapped into from a stat tile) ---------- */
+.list-header{
+  display:flex; align-items:center; gap:8px; margin-bottom:10px;
+}
+.back-btn{
+  background:none; border:none; color:var(--muted); cursor:pointer;
+  padding:4px; display:flex; align-items:center; justify-content:center; border-radius:8px;
+}
+.back-btn:hover{ background:rgba(255,255,255,0.08); color:var(--paper); }
+.list-title{ font-size:14px; font-weight:700; }
+.list-count{ color:var(--muted); font-size:12px; margin-left:auto; }
+
+.item-list{ display:flex; flex-direction:column; gap:6px; max-height:320px; overflow-y:auto; }
+.item{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  background:var(--surface); border-radius:10px; padding:9px 11px;
+  text-decoration:none; color:var(--paper);
+  border:1px solid rgba(255,255,255,0.05);
+  transition: background .12s ease;
+}
+.item:hover{ background:var(--surface-2); }
+.item .t{
+  font-size:12.5px; font-weight:600; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.item .ch{ font-size:11.5px; font-weight:700; flex-shrink:0; color:var(--muted); }
+.item.has-new .ch{ color:var(--gold); }
+
+.empty-list{ color:var(--muted); font-size:12px; text-align:center; padding:20px 0; }
+
+.setup{ text-align:center; padding:20px 6px; }
+.setup p{ color:var(--muted); font-size:12.5px; margin:0 0 12px; }
+.setup button{
+  background:var(--coral); color:var(--ink); border:none; border-radius:10px;
+  padding:9px 16px; font-weight:700; font-size:13px; cursor:pointer;
+}
+
+footer{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:8px 14px; background:var(--surface-2);
+  font-size:11px; color:var(--muted);
+}
+footer a{ color:var(--teal); text-decoration:none; }
+footer a:hover{ text-decoration:underline; }

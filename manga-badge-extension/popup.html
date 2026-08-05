@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manga Tracker</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <span class="title">📚 Manga Tracker</span>
+    <button id="refreshBtn" title="Refresh now">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
+        <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+      </svg>
+    </button>
+  </header>
+
+  <div id="content">
+    <div class="state" id="loadingState">
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <footer>
+    <span id="lastFetched"></span>
+    <a href="#" id="optionsLink">Settings</a>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
